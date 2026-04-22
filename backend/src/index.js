@@ -29,14 +29,14 @@ process.on('SIGINT', async () => {
 
 // Unhandled rejection handler
 process.on('unhandledRejection', (reason, promise) => {
-  logger.error('Unhandled Rejection at:', promise, 'reason:', reason);
-  process.exit(1);
+  logger.error('Unhandled Rejection:', reason);
+  // Do NOT exit — Neon idle disconnects trigger this
 });
 
 // Uncaught exception handler
 process.on('uncaughtException', (error) => {
   logger.error('Uncaught Exception:', error);
-  process.exit(1);
+  // Do NOT exit — keep server running
 });
 
 module.exports = server;
