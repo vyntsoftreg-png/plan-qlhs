@@ -3,7 +3,7 @@ const app = require('./config/server');
 const logger = require('./utils/logger');
 
 const PORT = process.env.PORT || 5000;
-const HOSTNAME = process.env.HOSTNAME || '0.0.0.0';
+const HOSTNAME = process.env.APP_HOSTNAME || '0.0.0.0';
 
 // Start server
 const server = app.listen(PORT, HOSTNAME, () => {
