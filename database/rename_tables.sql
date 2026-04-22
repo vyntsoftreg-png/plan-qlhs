@@ -1,0 +1,12 @@
+﻿ALTER TABLE "Users" RENAME TO users;
+ALTER TABLE "Children" RENAME TO children;
+ALTER TABLE "Skills" RENAME TO skills;
+ALTER TABLE "DevelopmentAreas" RENAME TO development_areas;
+ALTER TABLE "Kindergartens" RENAME TO kindergartens;
+ALTER TABLE "Templates" RENAME TO templates;
+ALTER TABLE "TemplateSkills" RENAME TO template_skills;
+ALTER TABLE "EducationPlans" RENAME TO education_plans;
+ALTER TABLE "PlanSkills" RENAME TO plan_skills;
+ALTER TABLE "EvaluationResults" RENAME TO evaluation_results;
+ALTER TABLE "ActivityLogs" RENAME TO activity_logs;
+ALTER TABLE "SkillImages" RENAME TO skill_images;

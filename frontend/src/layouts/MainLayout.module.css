@@ -1,0 +1,45 @@
+.sidebar {
+  background-color: #fafafa;
+  border-right: 1px solid #f0f0f0;
+}
+
+.logo {
+  padding: 20px;
+  text-align: center;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.logo h1 {
+  margin: 0;
+  color: #1890ff;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.header {
+  background-color: white;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #f0f0f0;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.content {
+  padding: 20px;
+  background-color: #fafafa;
+  min-height: calc(100vh - 64px);
+}
