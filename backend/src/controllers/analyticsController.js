@@ -201,13 +201,13 @@ exports.getTeacherAnalytics = async (req, res, next) => {
         AVG(CASE WHEN ep.status = 'completed' THEN 100 ELSE 0 END)::INT as completion_percentage,
         COUNT(DISTINCT CASE WHEN er.status = 'achieved' THEN er.id END) as evaluations_achieved,
         COUNT(DISTINCT er.id) as total_evaluations
-      FROM "Users" u
-      LEFT JOIN "Children" c ON u.id = c.assigned_teacher_id
-      LEFT JOIN "EducationPlans" ep ON u.id = ep.teacher_id
-      LEFT JOIN "PlanSkills" ps ON ep.id = ps.plan_id
-      LEFT JOIN "EvaluationResults" er ON ps.id = er.plan_skill_id
+      FROM users u
+      LEFT JOIN children c ON u.id = c.teacher_id
+      LEFT JOIN education_plans ep ON u.id = ep.teacher_id
+      LEFT JOIN plan_skills ps ON ep.id = ps.plan_id
+      LEFT JOIN evaluation_results er ON ps.id = er.plan_skill_id
       WHERE u.id = $1
-      GROUP BY u.id, u.name
+      GROUP BY u.id, u.fullname
     `;
 
     const db = require('../database');
