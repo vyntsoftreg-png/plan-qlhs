@@ -27,3 +27,17 @@ Thumbs.db
 # Temp
 *.tmp
 *.swp
+
+# Plans, roadmaps, phase docs
+**/IMPLEMENTATION_ROADMAP.md
+**/PHASE*_COMPLETE.md
+**/PHASES_*_SUMMARY.md
+**/BACKEND_SETUP.md
+
+# Tests
+**/tests/
+**/test_*.jpg
+**/test_*.png
+
+# Coverage reports
+**/coverage/
