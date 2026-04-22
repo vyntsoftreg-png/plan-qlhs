@@ -19,6 +19,7 @@ import TemplatesPage from './pages/templates/TemplatesPage';
 import KindergartenPage from './pages/settings/KindergartenPage';
 import AnalyticsPage from './pages/analytics/AnalyticsPage';
 import NotFoundPage from './pages/NotFoundPage';
+import LandingPage from './pages/LandingPage';
 
 // Layouts
 import MainLayout from './layouts/MainLayout';
@@ -139,7 +140,7 @@ function App() {
         />
 
         {/* Default redirect */}
-        <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Navigate to="/login" />} />
+        <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" /> : <LandingPage />} />
 
         {/* 404 Not Found */}
         <Route path="*" element={<NotFoundPage />} />
