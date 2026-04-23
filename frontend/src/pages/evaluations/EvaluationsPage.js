@@ -252,7 +252,7 @@ export default function EvaluationsPage() {
                     >
                       <Row align="top" justify="space-between">
                         <Col flex="auto" style={{ maxWidth: 'calc(100% - 100px)' }}>
-                          <Text strong style={{ fontSize: 14 }}>{goal.goal_title}</Text>
+                          <Text strong style={{ fontSize: 14 }}>{goal.section_name ? `[${goal.section_name}] ` : ''}{goal.goal_title}</Text>
                           {goal.activities && (
                             <div style={{ marginTop: 4, color: '#666', whiteSpace: 'pre-line' }}>
                               {goal.activities}

@@ -114,7 +114,7 @@ exports.getPlanById = async (planId) => {
 
     // Fetch plan goals (new system)
     const goalsResult = await pool.query(
-      `SELECT id, skill_name, goal_title, activities, image_url, display_order,
+      `SELECT id, skill_name, section_name, goal_title, activities, image_url, display_order,
               result_status, result_notes, evaluated_by, evaluated_at
        FROM plan_goals
        WHERE plan_id = $1
@@ -337,7 +337,7 @@ exports.createPlan = async (planData, createdBy) => {
 
     // Copy goals from template_goals to plan_goals
     const templateGoalsResult = await client.query(
-      `SELECT skill_name, goal_title, activities, image_url, display_order
+      `SELECT skill_name, section_name, goal_title, activities, image_url, display_order
        FROM template_goals WHERE template_id = $1
        ORDER BY display_order ASC`,
       [template_id]
@@ -345,9 +345,9 @@ exports.createPlan = async (planData, createdBy) => {
 
     for (const g of templateGoalsResult.rows) {
       await client.query(
-        `INSERT INTO plan_goals (plan_id, skill_name, goal_title, activities, image_url, display_order)
-         VALUES ($1, $2, $3, $4, $5, $6)`,
-        [planId, g.skill_name, g.goal_title, g.activities, g.image_url, g.display_order]
+        `INSERT INTO plan_goals (plan_id, skill_name, section_name, goal_title, activities, image_url, display_order)
+         VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+        [planId, g.skill_name, g.section_name || null, g.goal_title, g.activities, g.image_url, g.display_order]
       );
     }
 
@@ -499,7 +499,7 @@ exports.syncFromTemplate = async (planId) => {
 
     // Get current template goals
     const templateGoals = await client.query(
-      `SELECT skill_name, goal_title, activities, image_url, display_order
+      `SELECT skill_name, section_name, goal_title, activities, image_url, display_order
        FROM template_goals WHERE template_id = $1
        ORDER BY display_order ASC`,
       [template_id]
@@ -522,9 +522,9 @@ exports.syncFromTemplate = async (planId) => {
       const key = `${tg.skill_name}|||${tg.goal_title}`;
       if (!existingKeys.has(key)) {
         await client.query(
-          `INSERT INTO plan_goals (plan_id, skill_name, goal_title, activities, image_url, display_order)
-           VALUES ($1, $2, $3, $4, $5, $6)`,
-          [planId, tg.skill_name, tg.goal_title, tg.activities, tg.image_url, tg.display_order]
+          `INSERT INTO plan_goals (plan_id, skill_name, section_name, goal_title, activities, image_url, display_order)
+           VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+          [planId, tg.skill_name, tg.section_name || null, tg.goal_title, tg.activities, tg.image_url, tg.display_order]
         );
         added++;
       }
@@ -533,10 +533,10 @@ exports.syncFromTemplate = async (planId) => {
     // Update display_order for all plan goals to match template order
     for (const tg of templateGoals.rows) {
       await client.query(
-        `UPDATE plan_goals SET display_order = $1, activities = $2, image_url = $3
-         WHERE plan_id = $4 AND skill_name = $5 AND goal_title = $6
+        `UPDATE plan_goals SET display_order = $1, activities = $2, image_url = $3, section_name = $4
+         WHERE plan_id = $5 AND skill_name = $6 AND goal_title = $7
            AND (result_status IS NULL OR result_status = 'pending')`,
-        [tg.display_order, tg.activities, tg.image_url, planId, tg.skill_name, tg.goal_title]
+        [tg.display_order, tg.activities, tg.image_url, tg.section_name || null, planId, tg.skill_name, tg.goal_title]
       );
     }
 
@@ -698,8 +698,8 @@ exports.clonePlan = async (planId, { child_id, month, year, teacher_id }) => {
 
     // Copy goals without evaluation data
     await client.query(
-      `INSERT INTO plan_goals (plan_id, skill_name, goal_title, activities, image_url, display_order)
-       SELECT $1, skill_name, goal_title, activities, image_url, display_order
+      `INSERT INTO plan_goals (plan_id, skill_name, section_name, goal_title, activities, image_url, display_order)
+       SELECT $1, skill_name, section_name, goal_title, activities, image_url, display_order
        FROM plan_goals WHERE plan_id = $2
        ORDER BY display_order ASC, id ASC`,
       [newPlanId, planId]

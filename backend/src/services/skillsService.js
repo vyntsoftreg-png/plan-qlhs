@@ -108,7 +108,7 @@ exports.getSkillById = async (skillId) => {
     const skill = skillResult.rows[0];
 
     const goalsResult = await client.query(
-      `SELECT id, goal_title, activities, display_order
+      `SELECT id, section_name, goal_title, activities, display_order
        FROM skill_goals WHERE skill_id = $1
        ORDER BY display_order ASC, id ASC`,
       [skillId],
@@ -165,9 +165,9 @@ exports.createSkill = async (data, createdBy) => {
       for (let i = 0; i < goals.length; i++) {
         const g = goals[i];
         const goalResult = await client.query(
-          `INSERT INTO skill_goals (skill_id, goal_title, activities, display_order)
-           VALUES ($1, $2, $3, $4) RETURNING *`,
-          [skill.id, g.goal_title, g.activities || null, i],
+          `INSERT INTO skill_goals (skill_id, section_name, goal_title, activities, display_order)
+           VALUES ($1, $2, $3, $4, $5) RETURNING *`,
+          [skill.id, g.section_name || null, g.goal_title, g.activities || null, i],
         );
         insertedGoals.push(goalResult.rows[0]);
       }
@@ -252,9 +252,9 @@ exports.updateSkill = async (skillId, data, updatedBy) => {
       for (let i = 0; i < goals.length; i++) {
         const g = goals[i];
         await client.query(
-          `INSERT INTO skill_goals (skill_id, goal_title, activities, display_order)
-           VALUES ($1, $2, $3, $4)`,
-          [skillId, g.goal_title, g.activities || null, i],
+          `INSERT INTO skill_goals (skill_id, section_name, goal_title, activities, display_order)
+           VALUES ($1, $2, $3, $4, $5)`,
+          [skillId, g.section_name || null, g.goal_title, g.activities || null, i],
         );
       }
     }

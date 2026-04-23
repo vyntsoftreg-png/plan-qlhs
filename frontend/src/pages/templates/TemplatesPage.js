@@ -56,7 +56,7 @@ export default function TemplatesPage() {
   const openCreate = () => {
     setEditing(null);
     form.resetFields();
-    form.setFieldsValue({ skills: [{ skill_id: undefined, goals: [{ goal_title: '', activities: '' }] }] });
+    form.setFieldsValue({ skills: [{ skill_id: undefined, goals: [{ section_name: '', goal_title: '', activities: '' }] }] });
     setModalOpen(true);
   };
 
@@ -74,6 +74,7 @@ export default function TemplatesPage() {
           skillOrder.push(g.skill_name);
         }
         skillMap[g.skill_name].push({
+          section_name: g.section_name || '',
           goal_title: g.goal_title,
           activities: g.activities || '',
           image_url: g.image_url || '',
@@ -92,7 +93,7 @@ export default function TemplatesPage() {
         name: tmpl.name,
         description: tmpl.description || '',
         age_group: tmpl.age_group || '',
-        skills: skills.length > 0 ? skills : [{ skill_id: undefined, goals: [{ goal_title: '', activities: '' }] }],
+        skills: skills.length > 0 ? skills : [{ skill_id: undefined, goals: [{ section_name: '', goal_title: '', activities: '' }] }],
       });
       setModalOpen(true);
     } catch {
@@ -105,8 +106,8 @@ export default function TemplatesPage() {
     if (!skill) return;
     const skills = form.getFieldValue('skills');
     skills[skillFieldName].goals = (skill.goals && skill.goals.length > 0)
-      ? skill.goals.map(g => ({ goal_title: g.goal_title, activities: g.activities || '', image_url: '' }))
-      : [{ goal_title: '', activities: '', image_url: '' }];
+      ? skill.goals.map(g => ({ section_name: g.section_name || '', goal_title: g.goal_title, activities: g.activities || '', image_url: '' }))
+      : [{ section_name: '', goal_title: '', activities: '', image_url: '' }];
     form.setFieldsValue({ skills: [...skills] });
     forceUpdate(n => n + 1);
   };
@@ -149,6 +150,7 @@ export default function TemplatesPage() {
         (skill.goals || []).forEach(goal => {
           goals.push({
             skill_name: skillName,
+            section_name: goal.section_name || '',
             goal_title: goal.goal_title,
             activities: goal.activities || '',
             image_url: goal.image_url || '',
@@ -338,6 +340,13 @@ export default function TemplatesPage() {
                               <Row gutter={8} align="top">
                                 <Col flex="auto">
                                   <Form.Item
+                                    name={[goalField.name, 'section_name']}
+                                    label="Thêm phần"
+                                    style={{ marginBottom: 8 }}
+                                  >
+                                    <Input placeholder="VD: Phần A: Toán học" />
+                                  </Form.Item>
+                                  <Form.Item
                                     name={[goalField.name, 'goal_title']}
                                     rules={[{ required: true, message: 'Nhập mục tiêu' }]}
                                     label="Mục tiêu"
@@ -381,7 +390,7 @@ export default function TemplatesPage() {
                               </Row>
                             </div>
                           ))}
-                          <Button type="dashed" onClick={() => addGoal({ goal_title: '', activities: '', image_url: '' })} block icon={<PlusOutlined />}>
+                          <Button type="dashed" onClick={() => addGoal({ section_name: '', goal_title: '', activities: '', image_url: '' })} block icon={<PlusOutlined />}>
                             Thêm mục tiêu
                           </Button>
                         </div>
@@ -391,7 +400,7 @@ export default function TemplatesPage() {
                 ))}
                 <Button
                   type="dashed"
-                  onClick={() => addSkill({ skill_id: undefined, goals: [{ goal_title: '', activities: '' }] })}
+                  onClick={() => addSkill({ skill_id: undefined, goals: [{ section_name: '', goal_title: '', activities: '' }] })}
                   block
                   icon={<PlusOutlined />}
                   style={{ marginBottom: 16 }}

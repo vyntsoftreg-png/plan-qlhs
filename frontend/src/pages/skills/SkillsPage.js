@@ -53,7 +53,7 @@ export default function SkillsPage() {
   const openCreate = () => {
     setEditing(null);
     form.resetFields();
-    form.setFieldsValue({ goals: [{ goal_title: '', activities: '' }] });
+    form.setFieldsValue({ goals: [{ section_name: '', goal_title: '', activities: '' }] });
     setModalOpen(true);
   };
 
@@ -68,8 +68,8 @@ export default function SkillsPage() {
         description: skill.description || '',
         instruction_text: skill.instruction_text || '',
         goals: skill.goals && skill.goals.length > 0
-          ? skill.goals.map(g => ({ goal_title: g.goal_title, activities: g.activities || '' }))
-          : [{ goal_title: '', activities: '' }],
+          ? skill.goals.map(g => ({ section_name: g.section_name || '', goal_title: g.goal_title, activities: g.activities || '' }))
+          : [{ section_name: '', goal_title: '', activities: '' }],
       });
       setModalOpen(true);
     } catch {
@@ -253,6 +253,13 @@ export default function SkillsPage() {
                     )}
                   >
                     <Form.Item
+                      name={[field.name, 'section_name']}
+                      label="Thêm phần"
+                      style={{ marginBottom: 8 }}
+                    >
+                      <Input placeholder="VD: Phần A: Toán học" />
+                    </Form.Item>
+                    <Form.Item
                       name={[field.name, 'goal_title']}
                       label="Tên mục tiêu"
                       rules={[{ required: true, message: 'Nhập tên mục tiêu' }]}
@@ -271,7 +278,7 @@ export default function SkillsPage() {
                 ))}
                 <Button
                   type="dashed"
-                  onClick={() => add({ goal_title: '', activities: '' })}
+                  onClick={() => add({ section_name: '', goal_title: '', activities: '' })}
                   block
                   icon={<PlusOutlined />}
                 >
@@ -316,7 +323,7 @@ export default function SkillsPage() {
             <Divider>Mục tiêu &amp; Hoạt động</Divider>
             {viewSkill.goals && viewSkill.goals.length > 0 ? (
               viewSkill.goals.map((g, i) => (
-                <Card key={g.id} size="small" style={{ marginBottom: 8, background: '#fafafa' }} title={`${i + 1}. ${g.goal_title}`}>
+                <Card key={g.id} size="small" style={{ marginBottom: 8, background: '#fafafa' }} title={`${i + 1}. ${g.section_name ? `[${g.section_name}] ` : ''}${g.goal_title}`}>
                   {g.activities ? (
                     <div style={{ whiteSpace: 'pre-wrap', color: '#595959' }}>{g.activities}</div>
                   ) : (

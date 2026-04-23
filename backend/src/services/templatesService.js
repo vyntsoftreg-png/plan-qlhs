@@ -1,4 +1,4 @@
-﻿const db = require('../config/database');
+const db = require('../config/database');
 const logger = require('../utils/logger');
 
 /**
@@ -93,7 +93,7 @@ exports.getTemplateById = async (templateId, kindergartenId) => {
     }
 
     const goalsResult = await client.query(
-      `SELECT id, skill_name, goal_title, activities, image_url, display_order
+      `SELECT id, skill_name, section_name, goal_title, activities, image_url, display_order
        FROM template_goals
        WHERE template_id = $1
        ORDER BY display_order ASC, id ASC`,
@@ -125,10 +125,10 @@ exports.createTemplate = async (kindergartenId, name, description, ageGroup, goa
       for (let i = 0; i < goals.length; i++) {
         const g = goals[i];
         const goalResult = await client.query(
-          `INSERT INTO template_goals (template_id, skill_name, goal_title, activities, image_url, display_order)
-           VALUES ($1, $2, $3, $4, $5, $6)
+          `INSERT INTO template_goals (template_id, skill_name, section_name, goal_title, activities, image_url, display_order)
+           VALUES ($1, $2, $3, $4, $5, $6, $7)
            RETURNING *`,
-          [template.id, g.skill_name, g.goal_title, g.activities || null, g.image_url || null, i],
+          [template.id, g.skill_name, g.section_name || null, g.goal_title, g.activities || null, g.image_url || null, i],
         );
         insertedGoals.push(goalResult.rows[0]);
       }
@@ -182,9 +182,9 @@ exports.updateTemplate = async (templateId, kindergartenId, updates, goals) => {
       for (let i = 0; i < goals.length; i++) {
         const g = goals[i];
         await client.query(
-          `INSERT INTO template_goals (template_id, skill_name, goal_title, activities, image_url, display_order)
-           VALUES ($1, $2, $3, $4, $5, $6)`,
-          [templateId, g.skill_name, g.goal_title, g.activities || null, g.image_url || null, i],
+          `INSERT INTO template_goals (template_id, skill_name, section_name, goal_title, activities, image_url, display_order)
+           VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+          [templateId, g.skill_name, g.section_name || null, g.goal_title, g.activities || null, g.image_url || null, i],
         );
       }
     }
@@ -246,8 +246,8 @@ exports.cloneTemplate = async (templateId, kindergartenId, createdBy) => {
 
     // Copy goals
     await client.query(
-      `INSERT INTO template_goals (template_id, skill_name, goal_title, activities, image_url, display_order)
-       SELECT $1, skill_name, goal_title, activities, image_url, display_order
+      `INSERT INTO template_goals (template_id, skill_name, section_name, goal_title, activities, image_url, display_order)
+       SELECT $1, skill_name, section_name, goal_title, activities, image_url, display_order
        FROM template_goals WHERE template_id = $2
        ORDER BY display_order ASC, id ASC`,
       [newTemplate.id, templateId],

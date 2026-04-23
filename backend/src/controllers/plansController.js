@@ -563,7 +563,7 @@ exports.exportEvaluation = async (req, res, next) => {
 
     // Query plan_goals directly (evaluated data, not template data)
     const goalsResult = await pool.query(
-      `SELECT pg.skill_name, pg.goal_title, pg.activities, pg.image_url,
+      `SELECT pg.skill_name, pg.section_name, pg.goal_title, pg.activities, pg.image_url,
               pg.result_status, pg.result_notes, pg.display_order
        FROM plan_goals pg
        WHERE pg.plan_id = $1
@@ -624,11 +624,12 @@ exports.exportEvaluation = async (req, res, next) => {
         }
         const resultText = statusMap[goal.result_status] || 'Chưa đánh giá';
         const notesText = goal.result_notes ? `<br>${goal.result_notes}` : '';
+        const sectionHtml = goal.section_name ? `<div style="margin-bottom:4pt;"><b>${goal.section_name}</b></div>` : '';
         tableRows += '<tr>';
         if (index === 0) {
           tableRows += `<td rowspan="${rowspan}" style="border:1px solid #000;padding:6pt;vertical-align:middle;font-weight:bold;text-align:center;">${skillName}</td>`;
         }
-        tableRows += `<td style="border:1px solid #000;padding:6pt;vertical-align:top;"><b>${goal.goal_title}</b><br>${(goal.activities || '').replace(/\n/g, '<br>')}${imgHtml}</td>`;
+        tableRows += `<td style="border:1px solid #000;padding:6pt;vertical-align:top;">${sectionHtml}<b>- ${goal.goal_title}</b><br>${(goal.activities || '').replace(/\n/g, '<br>')}${imgHtml}</td>`;
         tableRows += `<td style="border:1px solid #000;padding:6pt;vertical-align:middle;text-align:center;">${resultText}${notesText}</td>`;
         tableRows += '</tr>';
       });
@@ -726,7 +727,7 @@ exports.exportPlan = async (req, res, next) => {
 
     // Query plan_goals
     const goalsResult = await pool.query(
-      `SELECT pg.skill_name, pg.goal_title, pg.activities, pg.image_url, pg.display_order
+      `SELECT pg.skill_name, pg.section_name, pg.goal_title, pg.activities, pg.image_url, pg.display_order
        FROM plan_goals pg
        WHERE pg.plan_id = $1
        ORDER BY pg.display_order ASC, pg.id ASC`,
@@ -779,11 +780,12 @@ exports.exportPlan = async (req, res, next) => {
         if (goal.image_url) {
           imgHtml = `<br><img src="${baseUrl}${goal.image_url}" width="300" height="220" style="display:block;margin-top:6pt;" />`;
         }
+        const sectionHtml = goal.section_name ? `<div style="margin-bottom:4pt;"><b>${goal.section_name}</b></div>` : '';
         tableRows += '<tr>';
         if (index === 0) {
           tableRows += `<td rowspan="${rowspan}" style="border:1px solid #000;padding:6pt;vertical-align:middle;font-weight:bold;text-align:center;width:18%;">${skillName}</td>`;
         }
-        tableRows += `<td style="border:1px solid #000;padding:6pt;vertical-align:top;width:42%;"><b>${goal.goal_title}</b></td>`;
+        tableRows += `<td style="border:1px solid #000;padding:6pt;vertical-align:top;width:42%;">${sectionHtml}<b>- ${goal.goal_title}</b></td>`;
         tableRows += `<td style="border:1px solid #000;padding:6pt;vertical-align:top;width:40%;">${(goal.activities || '').replace(/\n/g, '<br>')}${imgHtml}</td>`;
         tableRows += '</tr>';
       });

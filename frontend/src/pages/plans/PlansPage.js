@@ -471,7 +471,7 @@ export default function PlansPage() {
                         border: '1px solid #f0f0f0', borderRadius: 6,
                       }}
                     >
-                      <Text strong style={{ fontSize: 14 }}>{goal.goal_title}</Text>
+                      <Text strong style={{ fontSize: 14 }}>{goal.section_name ? `[${goal.section_name}] ` : ''}{goal.goal_title}</Text>
                       {goal.activities && (
                         <div style={{ marginTop: 4, color: '#666', whiteSpace: 'pre-line' }}>
                           {goal.activities}
